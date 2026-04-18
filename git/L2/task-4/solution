@@ -1,0 +1,20 @@
+ssh natasha@ststor01
+sudo su -
+cd /usr/src/kodekloudrepos/cluster
+git branch -a
+git checkout master
+git remote -v
+git remote add dev_cluster /opt/xfusioncorp_cluster.git/
+git remote -v
+git pull
+cp /tmp/index.html ./
+git add index.html
+git commit -m "Added index.html"
+git push dev_cluster master
+git log
+
+#check both remotes have different commit histories in log
+cd /opt/xfusioncorp_cluster.git/ 
+git log
+cd /opt/cluster.git
+git log 

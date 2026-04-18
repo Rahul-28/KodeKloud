@@ -1,0 +1,17 @@
+---
+- name: Install and enable vsftpd on all app servers
+  hosts: all
+  become: yes
+  gather_facts: false
+
+  tasks:
+    - name: Install vsftpd package
+      ansible.builtin.dnf:
+        name: vsftpd
+        state: present
+
+    - name: Ensure vsftpd service is started and enabled
+      ansible.builtin.service:
+        name: vsftpd
+        state: started
+        enabled: yes

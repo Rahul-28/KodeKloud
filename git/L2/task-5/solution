@@ -1,0 +1,7 @@
+ssh natasha@ststor01
+sudo su -
+cd /usr/src/kodekloudrepos/media
+git checkout master
+git revert HEAD (will prompt to a vi file where commit message can be updated)
+git commit --amend -m "revert media"
+git log --online -n 3 (must have 3 commits now, the last one being the revert commit)

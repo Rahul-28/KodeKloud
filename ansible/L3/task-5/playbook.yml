@@ -1,0 +1,27 @@
+---
+- name: play1
+  hosts: all
+  become: yes
+  gather_facts: false
+
+  tasks:
+    - name: appserver1
+      replace:
+        path: /opt/finance/blog.txt
+        regexp: 'xFusionCorp'
+        replace: 'Nautilus'
+      when: inventory_hostname == 'stapp01'
+
+    - name: appserver2
+      replace:
+        path: /opt/finance/story.txt
+        regexp: 'Nautilus'
+        replace: 'KodeKloud'
+      when: inventory_hostname == 'stapp02'
+
+    - name: appserver3
+      replace:
+        path: /opt/finance/media.txt
+        regexp: 'KodeKloud'
+        replace: 'xFusionCorp Industries'
+      when: inventory_hostname == 'stapp03'

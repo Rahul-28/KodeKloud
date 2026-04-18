@@ -1,0 +1,29 @@
+---
+- name: play1
+  hosts: all
+  become: yes 
+  gather_facts: true
+
+  tasks:
+    - name: blockinfile
+      blockinfile:
+        create: true
+        path: /root/facts.txt
+        block: "Ansible managed node architecture is {{ ansible_architecture }}"
+
+    - name: install httpd
+      yum:
+        name: httpd
+        state: present
+
+    - name: copy as index.html
+      copy:
+        src: /root/facts.txt
+        dest: /var/www/html/index.html
+        remote_src: true
+
+    - name: start httpd
+      service:
+        name: httpd
+        state: started
+        enabled: yes

@@ -1,0 +1,12 @@
+ssh natasha@ststor01
+sudo su -
+cd /usr/src/kodekloudrepos/beta
+git branch-a
+git checkout master
+git checkout -b xfusion
+cp /tmp/index.html ./
+git add index.html
+git commit -m "Added index.html"
+git checkout master
+git merge xfusion
+git push

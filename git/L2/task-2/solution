@@ -1,0 +1,7 @@
+ssh natasha@ststor01
+sudo su -
+cd /usr/src/kodekloudrepos/beta
+git branch-a
+git checkout master
+git checkout -b xfusioncorp_beta
+git log 

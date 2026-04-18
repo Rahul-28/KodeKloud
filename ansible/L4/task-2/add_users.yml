@@ -1,0 +1,51 @@
+---
+- name: Create users and groups on app server 2
+  hosts: stapp02
+  become: yes
+
+  tasks:
+
+    - name: Load users data
+      ansible.builtin.include_vars:
+        file: /home/thor/playbooks/data/users.yml
+        name: users
+
+    - name: Load passwords
+      ansible.builtin.include_vars:
+        file: /home/thor/playbooks/passwords.yml
+        name: pass
+
+    - name: Print the gateway for each host when defined
+      ansible.builtin.debug:
+        msg: "{{ pass.admin_pass }} and {{ pass.developer_pass }}"
+
+
+    - name: Ensure admins group exists
+      ansible.builtin.group:
+        name: admins
+        state: present
+
+    - name: Ensure developers group exists
+      ansible.builtin.group:
+        name: developers
+        state: present
+
+    - name: Create admin users with appropriate groups and password
+      ansible.builtin.user:
+        name: "{{ item }}"
+        groups: "admins,wheel"
+        append: yes
+        state: present
+        password: "{{ pass.admin_pass | password_hash('sha512') }}"
+      loop: "{{ users.admins }}"
+
+    - name: Create developer users with appropriate groups, home and password
+      ansible.builtin.user:
+        name: "{{ item }}"
+        groups: "developers"
+        append: yes
+        state: present
+        home: "/var/www"
+        create_home: yes
+        password: "{{ pass.developer_pass | password_hash('sha512') }}"
+      loop: "{{ users.developers }}"

@@ -1,0 +1,9 @@
+---
+- name: play 1
+  hosts: all
+  become: yes
+  tasks:
+    - name: create new file
+      ansible.builtin.file:
+        path: /tmp/file.txt
+        state: touch

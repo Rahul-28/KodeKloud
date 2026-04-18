@@ -1,0 +1,51 @@
+---
+- name: Set ACLs on DBA files
+  hosts: all
+  become: yes
+  gather_facts: false
+
+  tasks:
+    - name: Create blog.txt on stapp01
+      file:
+        path: /opt/dba/blog.txt
+        state: touch
+      when: inventory_hostname == 'stapp01'
+
+    - name: ACL for group tony on blog.txt
+      ansible.posix.acl:
+        path: /opt/dba/blog.txt
+        entity: tony
+        etype: group
+        permissions: r
+        state: present
+      when: inventory_hostname == 'stapp01'
+
+    - name: Create story.txt on stapp02
+      file:
+        path: /opt/dba/story.txt
+        state: touch
+      when: inventory_hostname == 'stapp02'
+
+    - name: ACL for user steve on story.txt
+      ansible.posix.acl:
+        path: /opt/dba/story.txt
+        entity: steve
+        etype: user
+        permissions: rw
+        state: present
+      when: inventory_hostname == 'stapp02'
+
+    - name: Create media.txt on stapp03
+      file:
+        path: /opt/dba/media.txt
+        state: touch
+      when: inventory_hostname == 'stapp03'
+
+    - name: ACL for group banner on media.txt
+      ansible.posix.acl:
+        path: /opt/dba/media.txt
+        entity: banner
+        etype: group
+        permissions: rw
+        state: present
+      when: inventory_hostname == 'stapp03'

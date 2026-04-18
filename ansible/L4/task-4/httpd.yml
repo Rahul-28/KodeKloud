@@ -1,0 +1,36 @@
+---
+- name: Setup Apache and PHP
+  hosts: stapp03 
+  tasks:
+    - name: Install httpd and php
+      yum:
+        name:
+          - httpd
+          - php
+        state: present
+
+    - name: Create /var/www/html/myroot directory
+      file:
+        path: /var/www/html/myroot
+        state: directory
+        mode: '0755'
+
+    - name: Change DocumentRoot in httpd.conf
+      lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^DocumentRoot'
+        line: 'DocumentRoot "/var/www/html/myroot"'
+
+    - name: Deploy phpinfo.php template
+      template:
+        src: templates/phpinfo.php.j2
+        dest: /var/www/html/myroot/phpinfo.php
+        owner: apache
+        group: apache
+        mode: '0644'
+
+    - name: Start and enable httpd
+      service:
+        name: httpd
+        state: started
+        enabled: yes

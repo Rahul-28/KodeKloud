@@ -1,0 +1,137 @@
+https://medium.com/@bouss3id.abdelkader/kodekloud-fix-issue-with-volumemounts-in-kubernetes-good-explanation-fe4d09729dbe
+
+refer this blog if you dont understand the question or answer
+
+Credits to the author
+
+----------------------------------------------------------------------
+
+### Step 1 — Observe and Analyse
+
+Inspect the running pod and configmap to understand the current state:
+
+```bash
+kubectl describe pod nginx-phpfpm        # reveals actual volume mount paths
+kubectl get configmap nginx-config -o yaml   # reveals what path nginx expects
+```
+
+From this investigation you discover:
+- ConfigMap says nginx should serve files from `/var/www/html` ✅
+- But nginx-container's shared volume is mounted at `/usr/share/nginx/html` ❌
+- php-fpm-container's shared volume is correctly mounted at `/var/www/html` ✅
+
+---
+
+### Step 2 — Identify the Bug
+
+```
+ConfigMap (truth)          nginx-container (reality)
+─────────────────          ─────────────────────────
+root /var/www/html    ≠    mountPath: /usr/share/nginx/html  ❌
+```
+
+The config and the actual mount path are **not aligned**. This one mismatch breaks the entire website.
+
+---
+
+### Step 3 — Fix the Pod
+
+Since you cannot edit a running pod's volume mounts directly, you export it, fix it, and recreate it:
+
+```bash
+# Export existing pod definition
+kubectl get pod nginx-phpfpm -o yaml > nginx-phpfpm.yaml
+
+# Edit the file — find nginx-container's mountPath and fix it
+# Change:  /usr/share/nginx/html  ❌
+# To:      /var/www/html          ✅
+
+# Delete existing pod and recreate from fixed yaml
+kubectl delete pod nginx-phpfpm
+kubectl apply -f nginx-phpfpm.yaml
+```
+
+---
+
+### Step 4 — Copy the File
+
+Now that nginx-container's volume is mounted at the correct path, copy the file into it:
+
+```bash
+kubectl cp /home/thor/index.php nginx-phpfpm:/var/www/html/index.php -c nginx-container
+```
+
+---
+
+### Step 5 — Why Both Containers Can See the File
+
+Because both containers now share the **same volume at the same path**, copying the file once gives both containers access to it automatically:
+
+```bash
+# Verify nginx-container can see it
+kubectl exec -it nginx-phpfpm -c nginx-container -- ls /var/www/html/
+
+# Verify php-fpm-container can also see it
+kubectl exec -it nginx-phpfpm -c php-fpm-container -- ls /var/www/html/
+```
+
+---
+
+### The Diagram — Fixed and Polished
+
+```
+BEFORE FIX
+┌──────────────────────────────────────────────────────────┐
+│                        POD                               │
+│                                                          │
+│   nginx-container          php-fpm-container             │
+│   ───────────────          ─────────────────             │
+│                                                          │
+│   nginx.conf:              volume mounted at:            │
+│   root=/var/www/html  ✅   /var/www/html      ✅         │
+│                                                          │
+│   BUT volume mounted at:                                 │
+│   /usr/share/nginx/html ❌                               │
+│                                                          │
+│   config ──────────────────────────────── mount          │
+│   /var/www/html        ≠        /usr/share/nginx/html    │
+│                  MISMATCH ❌                             │
+│                                                          │
+│              shared-files (emptyDir)                     │
+└──────────────────────────────────────────────────────────┘
+                      ↓ RESULT
+              nginx looks at wrong path
+              finds nothing → "File not found" ❌
+
+
+AFTER FIX
+┌──────────────────────────────────────────────────────────┐
+│                        POD                               │
+│                                                          │
+│   nginx-container          php-fpm-container             │
+│   ───────────────          ─────────────────             │
+│                                                          │
+│   nginx.conf:              volume mounted at:            │
+│   root=/var/www/html ✅    /var/www/html     ✅          │
+│                                                          │
+│   volume mounted at:                                     │
+│   /var/www/html      ✅                                  │
+│                                                          │
+│   config ──────────────────────────────── mount          │
+│   /var/www/html        =        /var/www/html            │
+│                  ALIGNED  ✅                             │
+│                                                          │
+│         index.php copied once → both containers see it   │
+│                                                          │
+│              shared-files (emptyDir)                     │
+└──────────────────────────────────────────────────────────┘
+                      ↓ RESULT
+              nginx finds index.php → php-fpm processes it
+              Customer sees website ✅
+```
+
+---
+
+### The One Sentence Summary
+
+> The ConfigMap was always correct — the only bug was that nginx-container's volume was mounted at the wrong path, so fixing the mountPath to match the ConfigMap resolved everything.

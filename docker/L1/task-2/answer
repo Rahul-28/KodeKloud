@@ -1,0 +1,3 @@
+ssh tony@stapp01
+
+docker run -d --name nginx_1 nginx:alpine
