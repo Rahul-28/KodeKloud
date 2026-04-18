@@ -1,0 +1,14 @@
+ssh tony@stapp01
+sudo vi /etc/ssh/sshd_config
+(change PermitRootLogin from 'yes' to 'no')
+sudo systemctl restart sshd
+
+ssh steve@stapp02
+sudo vi /etc/ssh/sshd_config
+(change PermitRootLogin from 'yes' to 'no')
+sudo systemctl restart sshd
+
+ssh banner@stapp03
+sudo vi /etc/ssh/sshd_config
+(change PermitRootLogin from 'yes' to 'no')
+sudo systemctl restart sshd
