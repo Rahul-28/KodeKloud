@@ -187,6 +187,7 @@ cat /tmp/index.php
 #    die("Connection failed: " . $conn->connect_error);
 # }
 # echo "Connected successfully";
+# ?>
 
 kubectl create -f .
 # output:
