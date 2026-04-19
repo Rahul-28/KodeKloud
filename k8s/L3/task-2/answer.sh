@@ -179,7 +179,7 @@ cat /tmp/index.php
 # $dbuser = $_ENV['MYSQL_USER'];       
 # $dbpass = $_ENV['MYSQL_PASSWORD'];   
 # $dbhost = $_ENV['MYSQL_HOST'];       
-# v /
+# 
 # $connect = mysqli_connect($dbhost, $dbuser, $dbpass) or die("Unable to Connect to '$dbhost'");
 # $test_query = "SHOW TABLES FROM $dbname";
 # $result = mysqli_query($test_query);
