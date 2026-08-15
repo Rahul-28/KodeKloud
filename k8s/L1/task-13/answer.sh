@@ -44,15 +44,15 @@ kubectl describe pod nginx-replicaset-2gwqc
 # output:
 # Name:             nginx-replicaset-2gwqc
 # Namespace:        defapiVersion: v1
-kind: Service
-metadata:
-  name: nginx-service
-spec:
-  type: NodePort
-  ports:
-    - port: 80
-      targetPort: 80
-      NodePort: 30080ault
+# kind: Service
+# metadata:
+#   name: nginx-service
+# spec:
+#   type: NodePort
+#   ports:
+#     - port: 80
+#       targetPort: 80
+#       NodePort: 30080
 # Priority:         0
 # Service Account:  default
 # Node:             jump-host/10.244.164.17
