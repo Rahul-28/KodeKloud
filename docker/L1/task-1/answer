@@ -1,0 +1,164 @@
+ssh banner@stapp03
+
+// To find the linux flavour and use appropriate package manager like apt, dnf, yum etc... 
+[banner@stapp03 ~]$ cat /etc/os-release 
+
+NAME="CentOS Stream"
+VERSION="9"
+ID="centos"
+ID_LIKE="rhel fedora"
+VERSION_ID="9"
+PLATFORM_ID="platform:el9"
+PRETTY_NAME="CentOS Stream 9"
+ANSI_COLOR="0;31"
+LOGO="fedora-logo-icon"
+CPE_NAME="cpe:/o:centos:centos:9"
+HOME_URL="https://centos.org/"
+BUG_REPORT_URL="https://issues.redhat.com/"
+REDHAT_SUPPORT_PRODUCT="Red Hat Enterprise Linux 9"
+REDHAT_SUPPORT_PRODUCT_VERSION="CentOS Stream"
+
+[banner@stapp03 ~]$  sudo dnf -y install dnf-plugins-core
+
+Last metadata expiration check: 0:06:35 ago on Thu Nov  5 06:02:00 2026.
+Package dnf-plugins-core-4.3.0-27.el9.noarch is already installed.
+Dependencies resolved.
+Nothing to do.
+Complete!
+
+// Add docker repo to dnf 
+[banner@stapp03 ~]$ sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+Adding repo from: https://download.docker.com/linux/centos/docker-ce.repo
+
+// Install docker-ce and docker compose & other plugins
+[banner@stapp03 ~]$ sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+Docker CE Stable - x86_64                                100 kB/s | 2.0 kB     00:00    
+Docker CE Stable - x86_64                                1.7 MB/s |  90 kB     00:00    
+Dependencies resolved.
+=========================================================================================
+ Package                       Arch       Version             Repository            Size
+=========================================================================================
+Installing:
+ containerd.io                 x86_64     2.4.2-3.el9         docker-ce-stable      35 M
+ docker-buildx-plugin          x86_64     0.38.1-1.el9        docker-ce-stable      18 M
+ docker-ce                     x86_64     3:29.9.3-1.el9      docker-ce-stable      26 M
+ docker-ce-cli                 x86_64     1:29.9.3-1.el9      docker-ce-stable     8.9 M
+ docker-compose-plugin         x86_64     5.7.0-1.el9         docker-ce-stable     8.7 M
+Installing dependencies:
+ container-selinux             noarch     4:2.250.0-1.el9     baseos                60 k
+ iptables-legacy               x86_64     1.8.10-11.1.el9     epel                  50 k
+ iptables-legacy-libs          x86_64     1.8.10-11.1.el9     epel                  38 k
+ iptables-libs                 x86_64     1.8.10-11.el9       baseos               462 k
+ jansson                       x86_64     2.14-1.el9          baseos                46 k
+ libmnl                        x86_64     1.0.4-16.el9        baseos                28 k
+ libnetfilter_conntrack        x86_64     1.0.9-1.el9         baseos                59 k
+ libnfnetlink                  x86_64     1.0.1-23.el9        baseos                29 k
+ libnftnl                      x86_64     1.2.6-4.el9         baseos                88 k
+ nftables                      x86_64     1:1.0.9-9.el9       baseos               455 k
+ xz                            x86_64     5.2.5-10.el9        baseos               225 k
+Installing weak dependencies:
+ docker-ce-rootless-extras     x86_64     29.9.3-1.el9        docker-ce-stable     5.6 M
+
+Transaction Summary
+=========================================================================================
+Install  17 Packages
+
+Total download size: 104 M
+Installed size: 393 M
+Is this ok [y/N]: y
+Downloading Packages:
+(1/17): container-selinux-2.250.0-1.el9.noarch.rpm       483 kB/s |  60 kB     00:00    
+(2/17): jansson-2.14-1.el9.x86_64.rpm                    370 kB/s |  46 kB     00:00    
+(3/17): libmnl-1.0.4-16.el9.x86_64.rpm                   967 kB/s |  28 kB     00:00    
+(4/17): libnetfilter_conntrack-1.0.9-1.el9.x86_64.rpm    2.0 MB/s |  59 kB     00:00    
+(5/17): libnfnetlink-1.0.1-23.el9.x86_64.rpm             973 kB/s |  29 kB     00:00    
+(6/17): libnftnl-1.2.6-4.el9.x86_64.rpm                  2.8 MB/s |  88 kB     00:00    
+(7/17): iptables-libs-1.8.10-11.el9.x86_64.rpm           1.0 MB/s | 462 kB     00:00    
+(8/17): xz-5.2.5-10.el9.x86_64.rpm                       877 kB/s | 225 kB     00:00    
+(9/17): nftables-1.0.9-9.el9.x86_64.rpm                  1.4 MB/s | 455 kB     00:00    
+(10/17): docker-buildx-plugin-0.38.1-1.el9.x86_64.rpm     42 MB/s |  18 MB     00:00    
+(11/17): docker-ce-cli-29.9.3-1.el9.x86_64.rpm            31 MB/s | 8.9 MB     00:00    
+(12/17): containerd.io-2.4.2-3.el9.x86_64.rpm             37 MB/s |  35 MB     00:00    
+(13/17): docker-ce-rootless-extras-29.9.3-1.el9.x86_64.r  23 MB/s | 5.6 MB     00:00    
+(14/17): docker-ce-29.9.3-1.el9.x86_64.rpm                27 MB/s |  26 MB     00:00    
+(15/17): iptables-legacy-libs-1.8.10-11.1.el9.x86_64.rpm 2.0 MB/s |  38 kB     00:00    
+(16/17): iptables-legacy-1.8.10-11.1.el9.x86_64.rpm      635 kB/s |  50 kB     00:00    
+(17/17): docker-compose-plugin-5.7.0-1.el9.x86_64.rpm     70 MB/s | 8.7 MB     00:00    
+-----------------------------------------------------------------------------------------
+Total                                                     48 MB/s | 104 MB     00:02     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                 1/1 
+  Installing       : libmnl-1.0.4-16.el9.x86_64                                     1/17 
+  Installing       : docker-buildx-plugin-0.38.1-1.el9.x86_64                       2/17 
+  Running scriptlet: docker-buildx-plugin-0.38.1-1.el9.x86_64                       2/17 
+  Installing       : docker-compose-plugin-5.7.0-1.el9.x86_64                       3/17 
+  Running scriptlet: docker-compose-plugin-5.7.0-1.el9.x86_64                       3/17 
+  Running scriptlet: container-selinux-4:2.250.0-1.el9.noarch                       4/17 
+  Installing       : container-selinux-4:2.250.0-1.el9.noarch                       4/17 
+  Running scriptlet: container-selinux-4:2.250.0-1.el9.noarch                       4/17 
+  Installing       : containerd.io-2.4.2-3.el9.x86_64                               5/17 
+  Running scriptlet: containerd.io-2.4.2-3.el9.x86_64                               5/17 
+  Installing       : docker-ce-cli-1:29.9.3-1.el9.x86_64                            6/17 
+  Running scriptlet: docker-ce-cli-1:29.9.3-1.el9.x86_64                            6/17 
+  Installing       : libnftnl-1.2.6-4.el9.x86_64                                    7/17 
+  Installing       : iptables-legacy-libs-1.8.10-11.1.el9.x86_64                    8/17 
+  Installing       : xz-5.2.5-10.el9.x86_64                                         9/17 
+  Installing       : libnfnetlink-1.0.1-23.el9.x86_64                              10/17 
+  Installing       : libnetfilter_conntrack-1.0.9-1.el9.x86_64                     11/17 
+  Installing       : iptables-libs-1.8.10-11.el9.x86_64                            12/17 
+  Installing       : iptables-legacy-1.8.10-11.1.el9.x86_64                        13/17 
+  Running scriptlet: iptables-legacy-1.8.10-11.1.el9.x86_64                        13/17 
+  Installing       : jansson-2.14-1.el9.x86_64                                     14/17 
+  Installing       : nftables-1:1.0.9-9.el9.x86_64                                 15/17 
+  Running scriptlet: nftables-1:1.0.9-9.el9.x86_64                                 15/17 
+  Installing       : docker-ce-rootless-extras-29.9.3-1.el9.x86_64                 16/17 
+  Running scriptlet: docker-ce-rootless-extras-29.9.3-1.el9.x86_64                 16/17 
+  Installing       : docker-ce-3:29.9.3-1.el9.x86_64                               17/17 
+  Running scriptlet: docker-ce-3:29.9.3-1.el9.x86_64                               17/17 
+  Running scriptlet: container-selinux-4:2.250.0-1.el9.noarch                      17/17 
+  Running scriptlet: docker-ce-3:29.9.3-1.el9.x86_64                               17/17 
+  Verifying        : container-selinux-4:2.250.0-1.el9.noarch                       1/17 
+  Verifying        : iptables-libs-1.8.10-11.el9.x86_64                             2/17 
+  Verifying        : jansson-2.14-1.el9.x86_64                                      3/17 
+  Verifying        : libmnl-1.0.4-16.el9.x86_64                                     4/17 
+  Verifying        : libnetfilter_conntrack-1.0.9-1.el9.x86_64                      5/17 
+  Verifying        : libnfnetlink-1.0.1-23.el9.x86_64                               6/17 
+  Verifying        : libnftnl-1.2.6-4.el9.x86_64                                    7/17 
+  Verifying        : nftables-1:1.0.9-9.el9.x86_64                                  8/17 
+  Verifying        : xz-5.2.5-10.el9.x86_64                                         9/17 
+  Verifying        : containerd.io-2.4.2-3.el9.x86_64                              10/17 
+  Verifying        : docker-buildx-plugin-0.38.1-1.el9.x86_64                      11/17 
+  Verifying        : docker-ce-3:29.9.3-1.el9.x86_64                               12/17 
+  Verifying        : docker-ce-cli-1:29.9.3-1.el9.x86_64                           13/17 
+  Verifying        : docker-ce-rootless-extras-29.9.3-1.el9.x86_64                 14/17 
+  Verifying        : docker-compose-plugin-5.7.0-1.el9.x86_64                      15/17 
+  Verifying        : iptables-legacy-1.8.10-11.1.el9.x86_64                        16/17 
+  Verifying        : iptables-legacy-libs-1.8.10-11.1.el9.x86_64                   17/17 
+
+Installed:
+  container-selinux-4:2.250.0-1.el9.noarch                                               
+  containerd.io-2.4.2-3.el9.x86_64                                                       
+  docker-buildx-plugin-0.38.1-1.el9.x86_64                                               
+  docker-ce-3:29.9.3-1.el9.x86_64                                                        
+  docker-ce-cli-1:29.9.3-1.el9.x86_64                                                    
+  docker-ce-rootless-extras-29.9.3-1.el9.x86_64                                          
+  docker-compose-plugin-5.7.0-1.el9.x86_64                                               
+  iptables-legacy-1.8.10-11.1.el9.x86_64                                                 
+  iptables-legacy-libs-1.8.10-11.1.el9.x86_64                                            
+  iptables-libs-1.8.10-11.el9.x86_64                                                     
+  jansson-2.14-1.el9.x86_64                                                              
+  libmnl-1.0.4-16.el9.x86_64                                                             
+  libnetfilter_conntrack-1.0.9-1.el9.x86_64                                              
+  libnfnetlink-1.0.1-23.el9.x86_64                                                       
+  libnftnl-1.2.6-4.el9.x86_64                                                            
+  nftables-1:1.0.9-9.el9.x86_64                                                          
+  xz-5.2.5-10.el9.x86_64                                                                 
+
+Complete!
+
+[banner@stapp03 ~]$ sudo systemctl enable --now docker
+Created symlink /etc/systemd/system/multi-user.target.wants/docker.service → /usr/lib/systemd/system/docker.service.
